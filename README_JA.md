@@ -1,4 +1,4 @@
-# Kasane WASM
+# Kasane-TypeScript
 
 **Kasane WASM** は、Kasane 4 次元時空間データベースエンジンの TypeScript ラッパーです。WebAssembly を通じて、Web ブラウザーおよび Node.js 環境で空間と時間データを管理するための高レベル API を提供します。
 
