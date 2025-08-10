@@ -1,7 +1,8 @@
 import { Kasane } from "../src/index";
+import { Range } from "../src/types";
 
 // WASMファイルを読み込んでKasaneを初期化
-const kasane = await Kasane.init("http://10.0.0.12/kasane_bg.wasm");
+const kasane = await Kasane.init("http://kakurituro/kasane_wasm_001.wasm");
 
 let v = kasane.getVersion();
 
@@ -18,18 +19,15 @@ kasane.addKey({
   type: "BOOLEAN",
 });
 
+let demorange: Range = {
+  OR: [{ z: 3, f: [3, 4], x: [5, 2], y: ["-"], i: 0, t: ["-"] }],
+};
+
 kasane.setValue({
   space: "smart_city",
   key: "is_operational",
   value: false,
-  range: {
-    z: 3,
-    f: [3, 4],
-    x: [5, 2],
-    y: ["-"],
-    i: 0,
-    t: ["-"],
-  },
+  range: demorange,
 });
 
 let value = kasane.getValue({
