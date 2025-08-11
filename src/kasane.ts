@@ -80,8 +80,8 @@ export class Kasane {
    * This defines the range of Kasane WASM versions that this TypeScript wrapper is designed to work with.
    */
   static readonly SUPPORTED_WASM_VERSION_RANGE = {
-    min: "0.0.1",
-    max: "0.0.1",
+    min: "0.0.2",
+    max: "0.0.2",
   };
   private inner: WasmKasane;
   private debug: boolean;

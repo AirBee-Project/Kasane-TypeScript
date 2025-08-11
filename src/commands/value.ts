@@ -254,17 +254,18 @@ export class ValueCommandsImpl implements ValueCommands {
     });
 
     if (typeof result === "object" && "GetValue" in result) {
-      // Convert WASM output to standardized format
-      return result.GetValue.map(
+      // result.GetValue は WasmGetValueOutput[] と推定
+      return (result.GetValue as unknown as WasmGetValueOutput[]).map(
         (wasmOutput: WasmGetValueOutput): GetValueOutput => ({
           spacetimeid: convertFromWasmSpaceTimeId(wasmOutput.spacetimeid),
-          id_string: wasmOutput.id_string || undefined,
-          vertex: convertVertex(wasmOutput.vertex),
-          center: wasmOutput.center || undefined,
+          id_string: wasmOutput.id_string ?? undefined,
+          vertex: wasmOutput.vertex ?? undefined,
+          center: wasmOutput.center ?? undefined,
           value: wasmOutput.value,
         })
       );
     }
+
     throw new Error("Unexpected response format for getValue");
   }
 

@@ -63,13 +63,12 @@ export class QueryCommandsImpl implements QueryCommands {
     });
 
     if (typeof result === "object" && "SelectValue" in result) {
-      // Convert WASM output to standardized format
-      return result.SelectValue.map(
-        (wasmOutput: WasmSelectOutput): SelectOutput => ({
+      return (result.SelectValue as unknown as WasmSelectOutput[]).map(
+        (wasmOutput): SelectOutput => ({
           spacetimeid: convertFromWasmSpaceTimeId(wasmOutput.spacetimeid),
-          id_string: wasmOutput.id_string || undefined,
-          vertex: convertVertex(wasmOutput.vertex),
-          center: wasmOutput.center || undefined,
+          id_string: wasmOutput.id_string ?? undefined,
+          vertex: wasmOutput.vertex ?? undefined,
+          center: wasmOutput.center ?? undefined,
         })
       );
     }

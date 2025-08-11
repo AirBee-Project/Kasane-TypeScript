@@ -5,15 +5,17 @@
  * returned by the WASM interface, based on Rust enum structures.
  */
 
+import { Point } from "./response";
+
 /**
  * Internal WASM dimension range format that matches Rust enum structure
  */
 export type WasmDimensionRange =
   | "Any"
-  | { Single: T }
-  | { LimitRange: [T, T] }
-  | { BeforeUnLimitRange: T }
-  | { AfterUnLimitRange: T };
+  | { Single: number }
+  | { LimitRange: [number, number] }
+  | { BeforeUnLimitRange: number }
+  | { AfterUnLimitRange: number };
 
 /**
  * Internal WASM SpaceTimeId format that matches the actual WASM output
@@ -22,15 +24,15 @@ export interface WasmSpaceTimeId {
   /** Zoom level (spatial resolution) */
   z: number;
   /** F dimension (altitude/height) */
-  f: WasmDimensionRange<number>;
+  f: WasmDimensionRange;
   /** X dimension (longitude-like coordinate) */
-  x: WasmDimensionRange<number>;
+  x: WasmDimensionRange;
   /** Y dimension (latitude-like coordinate) */
-  y: WasmDimensionRange<number>;
+  y: WasmDimensionRange;
   /** Time interval in seconds (0 for spatial ID) */
   i: number;
   /** T dimension (time index) */
-  t: WasmDimensionRange<number>;
+  t: WasmDimensionRange;
 }
 
 /**
@@ -42,18 +44,7 @@ export interface WasmGetValueOutput {
   /** Optional string representation of the space-time ID */
   id_string?: string | null;
   /** Optional eight vertices defining the 3D spatial region */
-  vertex?:
-    | [
-        number[],
-        number[],
-        number[],
-        number[],
-        number[],
-        number[],
-        number[],
-        number[]
-      ]
-    | null;
+  vertex?: [Point, Point, Point, Point, Point, Point, Point, Point] | null;
   /** Optional center point of the region */
   center?: [number, number, number] | null;
   /** The stored value in WASM format */
@@ -69,18 +60,7 @@ export interface WasmSelectOutput {
   /** Optional string representation of the space-time ID */
   id_string?: string | null;
   /** Optional eight vertices defining the 3D spatial region */
-  vertex?:
-    | [
-        number[],
-        number[],
-        number[],
-        number[],
-        number[],
-        number[],
-        number[],
-        number[]
-      ]
-    | null;
+  vertex?: [Point, Point, Point, Point, Point, Point, Point, Point] | null;
   /** Optional center point of the region */
   center?: [number, number, number] | null;
 }
