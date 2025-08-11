@@ -234,6 +234,5 @@ export function convertTextFilter(filter: FilterText): any {
   if ("endsWith" in filter) return { EndsWith: filter.endsWith };
   if ("caseInsensitiveEqual" in filter)
     return { CaseInsensitiveEqual: filter.caseInsensitiveEqual };
-  if ("regex" in filter) return { Regex: filter.regex };
   throw new Error(`Unknown text filter: ${JSON.stringify(filter)}`);
 }

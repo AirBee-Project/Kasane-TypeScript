@@ -1,6 +1,6 @@
 /**
  * Filter Types for Kasane 4D space-time database
- * 
+ *
  * This module contains all type definitions for filter conditions
  * used in value-based queries.
  */
@@ -38,8 +38,7 @@ export type FilterText =
   | { notContains: string }
   | { startsWith: string }
   | { endsWith: string }
-  | { caseInsensitiveEqual: string }
-  | { regex: string };
+  | { caseInsensitiveEqual: string };
 
 /**
  * Union type for all filter conditions.

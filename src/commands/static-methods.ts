@@ -273,13 +273,6 @@ export class StaticMethods {
       caseInsensitiveEqual: (value: string): FilterText => ({
         caseInsensitiveEqual: value,
       }),
-
-      /**
-       * Creates a filter that matches strings using regular expression.
-       * @param pattern The regular expression pattern
-       * @returns FilterText for regex condition
-       */
-      regex: (pattern: string): FilterText => ({ regex: pattern }),
     },
   };
 
