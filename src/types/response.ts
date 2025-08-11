@@ -1,6 +1,6 @@
 /**
  * Response Types for Kasane 4D space-time database
- * 
+ *
  * This module contains all type definitions for response objects
  * returned by Kasane operations.
  */
@@ -50,6 +50,12 @@ export interface SpaceTimeIdSet {
   ids: SpaceTimeId[];
 }
 
+export interface KeysInfo {
+  keyname: string;
+  keytype: string;
+}
+[];
+
 /**
  * Possible outputs from Kasane operations.
  */
@@ -59,6 +65,7 @@ export type Output =
   | { GetValue: GetValueOutput[] }
   | { SelectValue: SelectOutput[] }
   | { SpaceTimeIdSet: SpaceTimeIdSet }
+  | { KeysInfo: KeysInfo }
   | { Version: string }
   | "Success";
 

@@ -1,4 +1,5 @@
 import type { Output, KeyType } from "../types/index.js";
+import { KeysInfo } from "../types/response.js";
 import { KeyCommandsImpl } from "./key.js";
 
 /**
@@ -87,6 +88,14 @@ export class SpaceCommandsImpl implements SpaceCommands {
     throw new Error("Unexpected response format for showSpaces");
   }
 
+  keysInfo(params: { space: string }): KeysInfo {
+    let result = this.executeCommand({ KeysInfo: { spacename: params.space } });
+    if (typeof result === "object" && "KeysInfo" in result) {
+      return result.KeysInfo;
+    }
+    throw new Error("Unexpected response format for showSpaces");
+  }
+
   space(space: string) {
     const keyCommands = new KeyCommandsImpl(this.executeCommand);
     return {
@@ -95,6 +104,7 @@ export class SpaceCommandsImpl implements SpaceCommands {
         keyCommands.addKey({ space, key, type }),
       deleteKey: ({ key }: { key: string }) =>
         keyCommands.deleteKey({ space, key }),
+      key: (name: string) => keyCommands.key(space, name),
     };
   }
 }

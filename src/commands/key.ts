@@ -1,4 +1,12 @@
-import type { Output, KeyType } from "../types/index.js";
+import type {
+  Output,
+  KeyType,
+  OutputOptions,
+  ValueEntry,
+  Range,
+} from "../types/index.js";
+import { SpaceCommandsImpl } from "./space.js";
+import { ValueCommandsImpl } from "./value.js";
 
 /**
  * Key operation commands for managing data fields within spaces.
@@ -80,5 +88,40 @@ export class KeyCommandsImpl implements KeyCommands {
       return result.KeyNames;
     }
     throw new Error("Unexpected response format for showKeys");
+  }
+
+  /**
+   * Returns an object that exposes operations bound to a specific key in the space.
+   */
+  key(space: string, key: string) {
+    const valueCommands = new ValueCommandsImpl(this.executeCommand);
+    return {
+      getValue: (params: { range: Range; options?: OutputOptions }) =>
+        valueCommands.getValue({
+          space,
+          key,
+          range: params.range,
+          options: params.options,
+        }),
+
+      setValue: (params: { range: Range; value: ValueEntry }) =>
+        valueCommands.setValue({
+          space,
+          key,
+          range: params.range,
+          value: params.value,
+        }),
+
+      putValue: (params: { range: Range; value: ValueEntry }) =>
+        valueCommands.putValue({
+          space,
+          key,
+          range: params.range,
+          value: params.value,
+        }),
+
+      deleteValue: (params: { range: Range }) =>
+        valueCommands.deleteValue({ space, key, range: params.range }),
+    };
   }
 }
