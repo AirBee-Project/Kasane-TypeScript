@@ -6,6 +6,7 @@ import type {
   Point,
 } from "../types/index.js";
 import type { WasmSelectOutput } from "../types/wasm-internal.js";
+import { convertVertex } from "../utils/conversions.js";
 import { convertRange, convertFromWasmSpaceTimeId } from "../utils/index.js";
 
 /**
@@ -75,36 +76,4 @@ export class QueryCommandsImpl implements QueryCommands {
 
     throw new Error("Unexpected response format for select");
   }
-}
-
-function convertVertex(
-  wasmVertex:
-    | [
-        number[],
-        number[],
-        number[],
-        number[],
-        number[],
-        number[],
-        number[],
-        number[]
-      ]
-    | null
-    | undefined
-): [Point, Point, Point, Point, Point, Point, Point, Point] | undefined {
-  if (!wasmVertex) return undefined;
-  if (wasmVertex.length !== 8) {
-    throw new Error(
-      `Invalid vertex length: expected 8, got ${wasmVertex.length}`
-    );
-  }
-  return wasmVertex.map((v) => {
-    if (v.length !== 3) {
-      throw new Error(
-        `Invalid vertex point length: expected 3, got ${v.length}`
-      );
-    }
-    // 型アサーションでPointとして扱う
-    return v as Point;
-  }) as [Point, Point, Point, Point, Point, Point, Point, Point];
 }

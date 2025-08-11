@@ -12,6 +12,7 @@ import type {
   FilterBoolean,
   FilterInt,
   FilterText,
+  Point,
 } from "../types/index.js";
 
 import type {
@@ -235,4 +236,36 @@ export function convertTextFilter(filter: FilterText): any {
   if ("caseInsensitiveEqual" in filter)
     return { CaseInsensitiveEqual: filter.caseInsensitiveEqual };
   throw new Error(`Unknown text filter: ${JSON.stringify(filter)}`);
+}
+
+export function convertVertex(
+  wasmVertex:
+    | [
+        number[],
+        number[],
+        number[],
+        number[],
+        number[],
+        number[],
+        number[],
+        number[]
+      ]
+    | null
+    | undefined
+): [Point, Point, Point, Point, Point, Point, Point, Point] | undefined {
+  if (!wasmVertex) return undefined;
+  if (wasmVertex.length !== 8) {
+    throw new Error(
+      `Invalid vertex length: expected 8, got ${wasmVertex.length}`
+    );
+  }
+  return wasmVertex.map((v) => {
+    if (v.length !== 3) {
+      throw new Error(
+        `Invalid vertex point length: expected 3, got ${v.length}`
+      );
+    }
+    // 型アサーションでPointとして扱う
+    return v as Point;
+  }) as [Point, Point, Point, Point, Point, Point, Point, Point];
 }

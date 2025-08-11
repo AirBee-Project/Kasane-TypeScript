@@ -6,6 +6,7 @@ import type {
   OutputOptions,
 } from "../types/index.js";
 import type { WasmGetValueOutput } from "../types/wasm-internal.js";
+import { convertVertex } from "../utils/conversions.js";
 import {
   wrapValueEntry,
   convertRange,
@@ -258,7 +259,7 @@ export class ValueCommandsImpl implements ValueCommands {
         (wasmOutput: WasmGetValueOutput): GetValueOutput => ({
           spacetimeid: convertFromWasmSpaceTimeId(wasmOutput.spacetimeid),
           id_string: wasmOutput.id_string || undefined,
-          vertex: wasmOutput.vertex || undefined,
+          vertex: convertVertex(wasmOutput.vertex),
           center: wasmOutput.center || undefined,
           value: wasmOutput.value,
         })
