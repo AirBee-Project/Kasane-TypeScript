@@ -44,12 +44,12 @@ export interface KeyCommands {
    *
    * @example
    * ```typescript
-   * const keys = kasane.getKeys({ space: "sensor_data" });
+   * const keys = kasane.showKeys({ space: "sensor_data" });
    * console.log("Keys in sensor_data:", keys);
    * // Output: ["temperature", "humidity", "is_active"]
    * ```
    */
-  getKeys(params: { space: string }): string[];
+  showKeys(params: { space: string }): string[];
 }
 
 /**
@@ -74,11 +74,11 @@ export class KeyCommandsImpl implements KeyCommands {
     });
   }
 
-  getKeys(params: { space: string }): string[] {
+  showKeys(params: { space: string }): string[] {
     const result = this.executeCommand({ Keys: { spacename: params.space } });
     if (typeof result === "object" && "KeyNames" in result) {
       return result.KeyNames;
     }
-    throw new Error("Unexpected response format for getKeys");
+    throw new Error("Unexpected response format for showKeys");
   }
 }

@@ -172,7 +172,7 @@ Creates a new space (database).
 
 Deletes an existing space and all its data.
 
-#### `getSpaces(): string[]`
+#### `showSpaces(): string[]`
 
 Returns a list of all space names.
 
@@ -180,7 +180,7 @@ Returns a list of all space names.
 kasane.addSpace({ space: "smart_city" });
 kasane.addSpace({ space: "weather_data" });
 
-const spaces = kasane.getSpaces();
+const spaces = kasane.showSpaces();
 console.log(spaces); // ["smart_city", "weather_data"]
 
 kasane.deleteSpace({ space: "weather_data" });
@@ -196,7 +196,7 @@ Creates a new key with specified data type (`"INT"`, `"BOOLEAN"`, or `"TEXT"`).
 
 Deletes an existing key and all associated data.
 
-#### `getKeys(params: { space: string }): string[]`
+#### `showKeys(params: { space: string }): string[]`
 
 Returns a list of all keys in the specified space.
 
@@ -205,7 +205,7 @@ kasane.addKey({ space: "smart_city", key: "temperature", type: "INT" });
 kasane.addKey({ space: "smart_city", key: "is_operational", type: "BOOLEAN" });
 kasane.addKey({ space: "smart_city", key: "device_name", type: "TEXT" });
 
-const keys = kasane.getKeys({ space: "smart_city" });
+const keys = kasane.showKeys({ space: "smart_city" });
 console.log(keys); // ["temperature", "is_operational", "device_name"]
 ```
 
@@ -613,8 +613,8 @@ const boolFilter = Kasane.filter.boolean.isTrue();
 ### Method Categories
 
 - **Initialization**: `Kasane.init()`
-- **Space Management**: `addSpace()`, `deleteSpace()`, `getSpaces()`
-- **Key Management**: `addKey()`, `deleteKey()`, `getKeys()`
+- **Space Management**: `addSpace()`, `deleteSpace()`, `showSpaces()`
+- **Key Management**: `addKey()`, `deleteKey()`, `showKeys()`
 - **Value Operations**: `setValue()`, `putValue()`, `getValue()`, `deleteValue()`
 - **Query Operations**: `select()`
 - **Utilities**: `getVersion()`

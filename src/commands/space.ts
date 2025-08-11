@@ -38,12 +38,12 @@ export interface SpaceCommands {
    *
    * @example
    * ```typescript
-   * const spaces = kasane.getSpaces();
+   * const spaces = kasane.showSpaces();
    * console.log("Available spaces:", spaces);
    * // Output: ["sensor_data", "user_locations"]
    * ```
    */
-  getSpaces(): string[];
+  showSpaces(): string[];
 }
 
 /**
@@ -60,11 +60,11 @@ export class SpaceCommandsImpl implements SpaceCommands {
     this.executeCommand({ DeleteSpace: { spacename: params.space } });
   }
 
-  getSpaces(): string[] {
+  showSpaces(): string[] {
     const result = this.executeCommand({ Spaces: {} });
     if (typeof result === "object" && "SpaceNames" in result) {
       return result.SpaceNames;
     }
-    throw new Error("Unexpected response format for getSpaces");
+    throw new Error("Unexpected response format for showSpaces");
   }
 }

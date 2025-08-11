@@ -172,7 +172,7 @@ const kasane = await Kasane.init("/path/to/kasane.wasm", true);
 
 既存のスペースとその全データを削除します。
 
-#### `getSpaces(): string[]`
+#### `showSpaces(): string[]`
 
 全スペース名のリストを返します。
 
@@ -180,7 +180,7 @@ const kasane = await Kasane.init("/path/to/kasane.wasm", true);
 kasane.addSpace({ space: "smart_city" });
 kasane.addSpace({ space: "weather_data" });
 
-const spaces = kasane.getSpaces();
+const spaces = kasane.showSpaces();
 console.log(spaces); // ["smart_city", "weather_data"]
 
 kasane.deleteSpace({ space: "weather_data" });
@@ -196,7 +196,7 @@ kasane.deleteSpace({ space: "weather_data" });
 
 既存のキーと関連する全データを削除します。
 
-#### `getKeys(params: { space: string }): string[]`
+#### `showKeys(params: { space: string }): string[]`
 
 指定されたスペース内の全キーのリストを返します。
 
@@ -205,7 +205,7 @@ kasane.addKey({ space: "smart_city", key: "temperature", type: "INT" });
 kasane.addKey({ space: "smart_city", key: "is_operational", type: "BOOLEAN" });
 kasane.addKey({ space: "smart_city", key: "device_name", type: "TEXT" });
 
-const keys = kasane.getKeys({ space: "smart_city" });
+const keys = kasane.showKeys({ space: "smart_city" });
 console.log(keys); // ["temperature", "is_operational", "device_name"]
 ```
 
@@ -613,8 +613,8 @@ const boolFilter = Kasane.filter.boolean.isTrue();
 ### メソッドカテゴリ
 
 - **初期化**: `Kasane.init()`
-- **スペース管理**: `addSpace()`、`deleteSpace()`、`getSpaces()`
-- **キー管理**: `addKey()`、`deleteKey()`、`getKeys()`
+- **スペース管理**: `addSpace()`、`deleteSpace()`、`showSpaces()`
+- **キー管理**: `addKey()`、`deleteKey()`、`showKeys()`
 - **値操作**: `setValue()`、`putValue()`、`getValue()`、`deleteValue()`
 - **クエリ操作**: `select()`
 - **ユーティリティ**: `getVersion()`

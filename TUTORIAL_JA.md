@@ -168,7 +168,7 @@ async function setupSpaces(kasane: Kasane) {
   kasane.addSpace({ space: "traffic_monitoring" });
 
   // 作成されたスペースを確認
-  const spaces = kasane.getSpaces();
+  const spaces = kasane.showSpaces();
   console.log("作成されたスペース:", spaces);
   // 出力: ["smart_city", "weather_data", "traffic_monitoring"]
 }
@@ -201,7 +201,7 @@ async function setupKeys(kasane: Kasane) {
   });
 
   // キーを確認
-  const smartCityKeys = kasane.getKeys({ space: "smart_city" });
+  const smartCityKeys = kasane.showKeys({ space: "smart_city" });
   console.log("smart_cityのキー:", smartCityKeys);
 }
 ```
@@ -1556,11 +1556,11 @@ function debuggingTips(kasane: Kasane) {
 
   // 3. スペースとキーの一覧表示
   function debugSpaceInfo(kasane: Kasane) {
-    const spaces = kasane.getSpaces();
+    const spaces = kasane.showSpaces();
     console.log("=== スペース一覧 ===");
     spaces.forEach((space) => {
       console.log(`スペース: ${space}`);
-      const keys = kasane.getKeys({ space });
+      const keys = kasane.showKeys({ space });
       keys.forEach((key) => {
         console.log(`  キー: ${key}`);
       });
