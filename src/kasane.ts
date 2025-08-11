@@ -595,4 +595,9 @@ export class Kasane {
    * Static output option helpers for configuring getValue and select operations.
    */
   static options = StaticMethods.options;
+
+  ///編集中
+  space(name: string) {
+    return this.spaceCommands.space(name);
+  }
 }

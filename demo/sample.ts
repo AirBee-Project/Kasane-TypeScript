@@ -44,3 +44,6 @@ let value = kasane.getValue({
 });
 
 console.log(JSON.stringify(value));
+
+let test = kasane.space("smart_city");
+test.showKeys();
