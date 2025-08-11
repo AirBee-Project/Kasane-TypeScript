@@ -26,7 +26,7 @@ import type {
  * @param range The dimension range to convert
  * @returns WASM-compatible range object
  */
-export function convertDimensionRange<T>(range: DimensionRange<T>): any {
+export function convertDimensionRange(range: DimensionRange): any {
   if (Array.isArray(range)) {
     if (range.length === 1) {
       if (range[0] === "-") {
@@ -51,9 +51,9 @@ export function convertDimensionRange<T>(range: DimensionRange<T>): any {
  * @param wasmRange The WASM dimension range to convert
  * @returns Standardized dimension range
  */
-export function convertFromWasmDimensionRange<T>(
-  wasmRange: WasmDimensionRange<T>
-): DimensionRange<T> {
+export function convertFromWasmDimensionRange(
+  wasmRange: WasmDimensionRange
+): DimensionRange {
   if (wasmRange === "Any") {
     return ["-"];
   }
@@ -63,7 +63,7 @@ export function convertFromWasmDimensionRange<T>(
       return [wasmRange.Single];
     }
     if ("LimitRange" in wasmRange) {
-      return wasmRange.LimitRange as [T, T];
+      return wasmRange.LimitRange as [number, number];
     }
     if ("BeforeUnLimitRange" in wasmRange) {
       return ["-", wasmRange.BeforeUnLimitRange];
@@ -116,7 +116,7 @@ export function convertFromWasmSpaceTimeId(
  * @param range The dimension range to check
  * @returns True if the range represents "Any"
  */
-function isAnyRange<T>(range: DimensionRange<T>): boolean {
+function isAnyRange(range: DimensionRange): boolean {
   return Array.isArray(range) && range.length === 1 && range[0] === "-";
 }
 

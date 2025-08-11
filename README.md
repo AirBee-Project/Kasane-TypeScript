@@ -606,7 +606,7 @@ const boolFilter = Kasane.filter.boolean.isTrue();
 
 - `Range`: Space-time range specification supporting logical operations
 - `SpaceTimeId`: 4D identifier with z, f, x, y, i, t dimensions
-- `DimensionRange<T>`: Array-based range notation for dimensions
+- `DimensionRange`: Array-based range notation for dimensions
 - `ValueEntry`: Data values (number, string, boolean)
 - `KeyType`: Data type specification ("INT", "BOOLEAN", "TEXT")
 

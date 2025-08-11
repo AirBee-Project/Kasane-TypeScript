@@ -1,8 +1,9 @@
-import type { 
-  Output, 
-  SelectOutput, 
-  Range, 
-  OutputOptions 
+import type {
+  Output,
+  SelectOutput,
+  Range,
+  OutputOptions,
+  Point,
 } from "../types/index.js";
 import type { WasmSelectOutput } from "../types/wasm-internal.js";
 import { convertRange, convertFromWasmSpaceTimeId } from "../utils/index.js";
@@ -62,14 +63,48 @@ export class QueryCommandsImpl implements QueryCommands {
 
     if (typeof result === "object" && "SelectValue" in result) {
       // Convert WASM output to standardized format
-      return result.SelectValue.map((wasmOutput: WasmSelectOutput): SelectOutput => ({
-        spacetimeid: convertFromWasmSpaceTimeId(wasmOutput.spacetimeid),
-        id_string: wasmOutput.id_string || undefined,
-        vertex: wasmOutput.vertex || undefined,
-        center: wasmOutput.center || undefined,
-      }));
+      return result.SelectValue.map(
+        (wasmOutput: WasmSelectOutput): SelectOutput => ({
+          spacetimeid: convertFromWasmSpaceTimeId(wasmOutput.spacetimeid),
+          id_string: wasmOutput.id_string || undefined,
+          vertex: convertVertex(wasmOutput.vertex),
+          center: wasmOutput.center || undefined,
+        })
+      );
     }
 
     throw new Error("Unexpected response format for select");
   }
+}
+
+function convertVertex(
+  wasmVertex:
+    | [
+        number[],
+        number[],
+        number[],
+        number[],
+        number[],
+        number[],
+        number[],
+        number[]
+      ]
+    | null
+    | undefined
+): [Point, Point, Point, Point, Point, Point, Point, Point] | undefined {
+  if (!wasmVertex) return undefined;
+  if (wasmVertex.length !== 8) {
+    throw new Error(
+      `Invalid vertex length: expected 8, got ${wasmVertex.length}`
+    );
+  }
+  return wasmVertex.map((v) => {
+    if (v.length !== 3) {
+      throw new Error(
+        `Invalid vertex point length: expected 3, got ${v.length}`
+      );
+    }
+    // 型アサーションでPointとして扱う
+    return v as Point;
+  }) as [Point, Point, Point, Point, Point, Point, Point, Point];
 }

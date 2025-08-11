@@ -81,7 +81,7 @@ export class StaticMethods {
      * @param value The single value
      * @returns Dimension range for single value
      */
-    single: <T>(value: T): DimensionRange<T> => [value],
+    single: (value: number): DimensionRange => [value],
 
     /**
      * Creates a range between two values (inclusive).
@@ -89,27 +89,27 @@ export class StaticMethods {
      * @param end End value
      * @returns Dimension range for value range
      */
-    between: <T>(start: T, end: T): DimensionRange<T> => [start, end],
+    between: (start: number, end: number): DimensionRange => [start, end],
 
     /**
      * Creates a range from minimum value to specified value.
      * @param end End value
      * @returns Dimension range for before unlimited range
      */
-    before: <T>(end: T): DimensionRange<T> => ["-", end],
+    before: (end: number): DimensionRange => ["-", end],
 
     /**
      * Creates a range from specified value to maximum value.
      * @param start Start value
      * @returns Dimension range for after unlimited range
      */
-    after: <T>(start: T): DimensionRange<T> => [start, "-"],
+    after: (start: number): DimensionRange => [start, "-"],
 
     /**
      * Creates a range that matches all values in the dimension.
      * @returns Dimension range for any/all values
      */
-    any: <T>(): DimensionRange<T> => ["-"],
+    any: (): DimensionRange => ["-"],
   };
 
   /**
