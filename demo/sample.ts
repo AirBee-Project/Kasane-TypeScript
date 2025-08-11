@@ -2,7 +2,7 @@ import { Kasane } from "../src/index";
 import { Range } from "../src/types";
 
 // WASMファイルを読み込んでKasaneを初期化
-const kasane = await Kasane.init("http://10.0.0.12/kasane_bg.wasm", true);
+const kasane = await Kasane.init("http://cdn.kasane.dev/kasane_bg.wasm");
 
 let v = kasane.getVersion();
 
@@ -41,12 +41,7 @@ let value = kasane.getValue({
     i: 0,
     t: ["-"],
   },
+  options: { vertex: true, center: true, id_string: true },
 });
 
 console.log(JSON.stringify(value));
-
-let test = kasane.space("smart_city");
-test.showKeys();
-test.addKey({ key: "tomoro", type: "BOOLEAN" });
-
-let a = test.key("tomoro");

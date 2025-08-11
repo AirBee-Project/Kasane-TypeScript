@@ -71,14 +71,17 @@ import {
  * });
  * ```
  */
+/**
+ * Main Kasane class for 4D space-time database operations.
+ */
 export class Kasane {
   /**
    * Supported WASM version range for this npm package.
    * This defines the range of Kasane WASM versions that this TypeScript wrapper is designed to work with.
    */
   static readonly SUPPORTED_WASM_VERSION_RANGE = {
-    min: "0.0.1",
-    max: "0.0.1",
+    min: "0.0.2",
+    max: "0.0.2",
   };
   private inner: WasmKasane;
   private debug: boolean;
@@ -120,6 +123,11 @@ export class Kasane {
    * // With debug logging
    * const kasane = await Kasane.init("/assets/kasane.wasm", true);
    * ```
+   */
+  /**
+   * Initializes Kasane from WASM URL.
+   * @param wasmUrl URL to kasane.wasm file
+   * @param debug Enable debug logging
    */
   static async init(wasmUrl: string, debug = false): Promise<Kasane> {
     await initWasm(wasmUrl);
@@ -241,47 +249,23 @@ export class Kasane {
   // ========== Space Operations ==========
 
   /**
-   * Creates a new space (database) with the specified name.
-   *
-   * @param params Object containing space name
-   * @param params.space Name of the space to create
-   *
-   * @example
-   * ```typescript
-   * kasane.addSpace({ space: "sensor_data" });
-   * kasane.addSpace({ space: "user_locations" });
-   * ```
+   * Creates a new space.
+   * @param params.space Name of the space
    */
   addSpace(params: { space: string }): void {
     return this.spaceCommands.addSpace(params);
   }
 
   /**
-   * Deletes an existing space and all its data.
-   *
-   * @param params Object containing space name
-   * @param params.space Name of the space to delete
-   *
-   * @example
-   * ```typescript
-   * kasane.deleteSpace({ space: "old_sensor_data" });
-   * ```
+   * Deletes a space and all its data.
+   * @param params.space Name of the space
    */
   deleteSpace(params: { space: string }): void {
     return this.spaceCommands.deleteSpace(params);
   }
 
   /**
-   * Retrieves a list of all existing space names.
-   *
-   * @returns Array of space names
-   *
-   * @example
-   * ```typescript
-   * const spaces = kasane.showSpaces();
-   * console.log("Available spaces:", spaces);
-   * // Output: ["sensor_data", "user_locations"]
-   * ```
+   * Returns all space names.
    */
   showSpaces(): string[] {
     return this.spaceCommands.showSpaces();
@@ -596,7 +580,10 @@ export class Kasane {
    */
   static options = StaticMethods.options;
 
-  ///編集中
+  /**
+   * Returns space operations object for chaining.
+   * @param name Name of the space
+   */
   space(name: string) {
     return this.spaceCommands.space(name);
   }
