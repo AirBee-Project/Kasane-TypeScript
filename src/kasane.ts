@@ -78,7 +78,7 @@ export class Kasane {
    */
   static readonly SUPPORTED_WASM_VERSION_RANGE = {
     min: "0.0.1",
-    max: "0.1.0"
+    max: "0.0.1",
   };
   private inner: WasmKasane;
   private debug: boolean;
@@ -91,13 +91,15 @@ export class Kasane {
   private constructor(inner: WasmKasane, debug: boolean) {
     this.inner = inner;
     this.debug = debug;
-    
+
     // Initialize command implementations
     this.spaceCommands = new SpaceCommandsImpl(this.executeCommand.bind(this));
     this.keyCommands = new KeyCommandsImpl(this.executeCommand.bind(this));
     this.valueCommands = new ValueCommandsImpl(this.executeCommand.bind(this));
     this.queryCommands = new QueryCommandsImpl(this.executeCommand.bind(this));
-    this.utilityCommands = new UtilityCommandsImpl(this.executeCommand.bind(this));
+    this.utilityCommands = new UtilityCommandsImpl(
+      this.executeCommand.bind(this)
+    );
   }
 
   /**
@@ -123,17 +125,17 @@ export class Kasane {
     await initWasm(wasmUrl);
     const instance = new WasmKasane();
     const kasane = new Kasane(instance, debug);
-    
+
     // Verify WASM version compatibility
     Kasane.checkVersionCompatibility(kasane);
-    
+
     return kasane;
   }
 
   /**
    * Checks if the loaded WASM version is compatible with this npm package.
    * Logs a warning if the version is outside the supported range but allows operation to continue.
-   * 
+   *
    * @param kasane The Kasane instance to check version for
    * @private
    */
@@ -141,20 +143,20 @@ export class Kasane {
     try {
       const wasmVersion = kasane.getVersion();
       const { min, max } = Kasane.SUPPORTED_WASM_VERSION_RANGE;
-      
+
       if (!Kasane.isVersionInRange(wasmVersion, min, max)) {
         console.warn(
           `[Kasane] Version compatibility warning: ` +
-          `WASM version "${wasmVersion}" is outside the supported range "${min}" - "${max}". ` +
-          `This npm package (kasane-client) is designed to work with WASM versions in this range. ` +
-          `Functionality may be limited or unexpected behavior may occur.`
+            `WASM version "${wasmVersion}" is outside the supported range "${min}" - "${max}". ` +
+            `This npm package (kasane-client) is designed to work with WASM versions in this range. ` +
+            `Functionality may be limited or unexpected behavior may occur.`
         );
       }
     } catch (error) {
       // If version check fails, log warning but don't prevent initialization
       console.warn(
         `[Kasane] Could not verify WASM version compatibility: ${error}. ` +
-        `Continuing with initialization.`
+          `Continuing with initialization.`
       );
     }
   }
@@ -162,23 +164,27 @@ export class Kasane {
   /**
    * Checks if a version string is within the specified range.
    * Uses simple semantic version comparison (major.minor.patch).
-   * 
+   *
    * @param version Version to check
    * @param minVersion Minimum supported version
-   * @param maxVersion Maximum supported version  
+   * @param maxVersion Maximum supported version
    * @returns true if version is within range, false otherwise
    * @private
    */
-  private static isVersionInRange(version: string, minVersion: string, maxVersion: string): boolean {
+  private static isVersionInRange(
+    version: string,
+    minVersion: string,
+    maxVersion: string
+  ): boolean {
     const parseVersion = (v: string): number[] => {
-      return v.split('.').map(part => parseInt(part, 10) || 0);
+      return v.split(".").map((part) => parseInt(part, 10) || 0);
     };
 
     const compareVersions = (v1: number[], v2: number[]): number => {
       for (let i = 0; i < Math.max(v1.length, v2.length); i++) {
         const part1 = v1[i] || 0;
         const part2 = v2[i] || 0;
-        
+
         if (part1 !== part2) {
           return part1 - part2;
         }
@@ -205,11 +211,21 @@ export class Kasane {
    */
   private executeCommand(command: any): Output {
     if (this.debug) {
-      console.log("INPUT :" + JSON.stringify(command));
+      console.log(
+        "INPUT :" +
+          JSON.stringify({
+            command: [command],
+          })
+      );
     }
 
-    const res = this.inner.execute(JSON.stringify(command));
-    const res_json: CommandResult = JSON.parse(res);
+    const res = this.inner.execute(
+      JSON.stringify({
+        command: [command],
+      })
+    );
+
+    const res_json: CommandResult = JSON.parse(res)[0];
 
     if (this.debug) {
       console.log("OUTPUT:" + JSON.stringify(res_json));

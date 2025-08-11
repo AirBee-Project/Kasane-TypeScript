@@ -7,7 +7,7 @@ export class Kasane {
    */
   constructor();
   /**
-   * 実行メソッド
+   * 実行メソッド（複数コマンド対応）
    */
   execute(command_json: string): string;
 }

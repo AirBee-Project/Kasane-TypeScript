@@ -12,6 +12,7 @@ import type {
   FilterBoolean,
   FilterInt,
   FilterText,
+  Point,
 } from "../types/index.js";
 
 import type {
@@ -26,7 +27,7 @@ import type {
  * @param range The dimension range to convert
  * @returns WASM-compatible range object
  */
-export function convertDimensionRange<T>(range: DimensionRange<T>): any {
+export function convertDimensionRange(range: DimensionRange): any {
   if (Array.isArray(range)) {
     if (range.length === 1) {
       if (range[0] === "-") {
@@ -51,9 +52,9 @@ export function convertDimensionRange<T>(range: DimensionRange<T>): any {
  * @param wasmRange The WASM dimension range to convert
  * @returns Standardized dimension range
  */
-export function convertFromWasmDimensionRange<T>(
-  wasmRange: WasmDimensionRange<T>
-): DimensionRange<T> {
+export function convertFromWasmDimensionRange(
+  wasmRange: WasmDimensionRange
+): DimensionRange {
   if (wasmRange === "Any") {
     return ["-"];
   }
@@ -63,7 +64,7 @@ export function convertFromWasmDimensionRange<T>(
       return [wasmRange.Single];
     }
     if ("LimitRange" in wasmRange) {
-      return wasmRange.LimitRange as [T, T];
+      return wasmRange.LimitRange as [number, number];
     }
     if ("BeforeUnLimitRange" in wasmRange) {
       return ["-", wasmRange.BeforeUnLimitRange];
@@ -116,7 +117,7 @@ export function convertFromWasmSpaceTimeId(
  * @param range The dimension range to check
  * @returns True if the range represents "Any"
  */
-function isAnyRange<T>(range: DimensionRange<T>): boolean {
+function isAnyRange(range: DimensionRange): boolean {
   return Array.isArray(range) && range.length === 1 && range[0] === "-";
 }
 
@@ -234,6 +235,37 @@ export function convertTextFilter(filter: FilterText): any {
   if ("endsWith" in filter) return { EndsWith: filter.endsWith };
   if ("caseInsensitiveEqual" in filter)
     return { CaseInsensitiveEqual: filter.caseInsensitiveEqual };
-  if ("regex" in filter) return { Regex: filter.regex };
   throw new Error(`Unknown text filter: ${JSON.stringify(filter)}`);
+}
+
+export function convertVertex(
+  wasmVertex:
+    | [
+        number[],
+        number[],
+        number[],
+        number[],
+        number[],
+        number[],
+        number[],
+        number[]
+      ]
+    | null
+    | undefined
+): [Point, Point, Point, Point, Point, Point, Point, Point] | undefined {
+  if (!wasmVertex) return undefined;
+  if (wasmVertex.length !== 8) {
+    throw new Error(
+      `Invalid vertex length: expected 8, got ${wasmVertex.length}`
+    );
+  }
+  return wasmVertex.map((v) => {
+    if (v.length !== 3) {
+      throw new Error(
+        `Invalid vertex point length: expected 3, got ${v.length}`
+      );
+    }
+    // 型アサーションでPointとして扱う
+    return v as Point;
+  }) as [Point, Point, Point, Point, Point, Point, Point, Point];
 }

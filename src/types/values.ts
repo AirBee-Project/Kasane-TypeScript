@@ -1,6 +1,6 @@
 /**
  * Value and Key Types for Kasane 4D space-time database
- * 
+ *
  * This module contains type definitions for values and keys
  * used throughout the Kasane system.
  */

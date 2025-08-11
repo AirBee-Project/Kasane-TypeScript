@@ -1,10 +1,12 @@
-import type { 
-  Output, 
-  SelectOutput, 
-  Range, 
-  OutputOptions 
+import type {
+  Output,
+  SelectOutput,
+  Range,
+  OutputOptions,
+  Point,
 } from "../types/index.js";
 import type { WasmSelectOutput } from "../types/wasm-internal.js";
+import { convertVertex } from "../utils/conversions.js";
 import { convertRange, convertFromWasmSpaceTimeId } from "../utils/index.js";
 
 /**
@@ -62,12 +64,14 @@ export class QueryCommandsImpl implements QueryCommands {
 
     if (typeof result === "object" && "SelectValue" in result) {
       // Convert WASM output to standardized format
-      return result.SelectValue.map((wasmOutput: WasmSelectOutput): SelectOutput => ({
-        spacetimeid: convertFromWasmSpaceTimeId(wasmOutput.spacetimeid),
-        id_string: wasmOutput.id_string || undefined,
-        vertex: wasmOutput.vertex || undefined,
-        center: wasmOutput.center || undefined,
-      }));
+      return result.SelectValue.map(
+        (wasmOutput: WasmSelectOutput): SelectOutput => ({
+          spacetimeid: convertFromWasmSpaceTimeId(wasmOutput.spacetimeid),
+          id_string: wasmOutput.id_string || undefined,
+          vertex: convertVertex(wasmOutput.vertex),
+          center: wasmOutput.center || undefined,
+        })
+      );
     }
 
     throw new Error("Unexpected response format for select");

@@ -606,7 +606,7 @@ const boolFilter = Kasane.filter.boolean.isTrue();
 
 - `Range`: 論理演算をサポートする時空間範囲指定
 - `SpaceTimeId`: z、f、x、y、i、t 次元を持つ 4D 識別子
-- `DimensionRange<T>`: 次元用の配列ベース範囲記法
+- `DimensionRange`: 次元用の配列ベース範囲記法
 - `ValueEntry`: データ値（数値、文字列、ブール値）
 - `KeyType`: データ型指定（"INT"、"BOOLEAN"、"TEXT"）
 

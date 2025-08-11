@@ -2,9 +2,7 @@ import { Kasane } from "../src/index";
 import { Range } from "../src/types";
 
 // WASMファイルを読み込んでKasaneを初期化
-const kasane = await Kasane.init(
-  "https://kasane-wasm-cdn.pages.dev/kasane_wasm_001.wasm"
-);
+const kasane = await Kasane.init("http://10.0.0.12/kasane_bg.wasm", true);
 
 let v = kasane.getVersion();
 

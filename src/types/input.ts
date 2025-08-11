@@ -21,11 +21,11 @@ import type { Filter } from "./filters.js";
  * - `[T, "-"]`: AfterUnlimitRange from T to maximum value
  * - `["-"]`: Any (all values in dimension)
  */
-export type DimensionRange<T> =
-  | [T] // Single value
-  | [T, T] // LimitRange: [start, end]
-  | ["-", T] // BeforeUnLimitRange: [-, end]
-  | [T, "-"] // AfterUnlimitRange: [start, -]
+export type DimensionRange =
+  | [number] // Single value
+  | [number, number] // LimitRange: [start, end]
+  | ["-", number] // BeforeUnLimitRange: [-, end]
+  | [number, "-"] // AfterUnlimitRange: [start, -]
   | ["-"]; // Any
 
 /**
@@ -44,15 +44,15 @@ export interface SpaceTimeId {
   /** Zoom level (spatial resolution) - Required */
   z: number;
   /** F dimension (altitude/height)  */
-  f: DimensionRange<number>;
+  f: DimensionRange;
   /** X dimension (longitude-like coordinate)  */
-  x: DimensionRange<number>;
+  x: DimensionRange;
   /** Y dimension (latitude-like coordinate)  */
-  y: DimensionRange<number>;
+  y: DimensionRange;
   /** Time interval in seconds (0 for spatial ID) - Required */
   i: number;
   /** T dimension (time index)  */
-  t: DimensionRange<number>;
+  t: DimensionRange;
 }
 
 /**

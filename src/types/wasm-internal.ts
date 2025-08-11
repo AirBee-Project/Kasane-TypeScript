@@ -1,6 +1,6 @@
 /**
  * Internal Types for WASM Interface
- * 
+ *
  * This module contains type definitions that match the exact format
  * returned by the WASM interface, based on Rust enum structures.
  */
@@ -8,7 +8,7 @@
 /**
  * Internal WASM dimension range format that matches Rust enum structure
  */
-export type WasmDimensionRange<T> =
+export type WasmDimensionRange =
   | "Any"
   | { Single: T }
   | { LimitRange: [T, T] }
@@ -42,7 +42,18 @@ export interface WasmGetValueOutput {
   /** Optional string representation of the space-time ID */
   id_string?: string | null;
   /** Optional eight vertices defining the 3D spatial region */
-  vertex?: [number[], number[], number[], number[], number[], number[], number[], number[]] | null;
+  vertex?:
+    | [
+        number[],
+        number[],
+        number[],
+        number[],
+        number[],
+        number[],
+        number[],
+        number[]
+      ]
+    | null;
   /** Optional center point of the region */
   center?: [number, number, number] | null;
   /** The stored value in WASM format */
@@ -58,7 +69,18 @@ export interface WasmSelectOutput {
   /** Optional string representation of the space-time ID */
   id_string?: string | null;
   /** Optional eight vertices defining the 3D spatial region */
-  vertex?: [number[], number[], number[], number[], number[], number[], number[], number[]] | null;
+  vertex?:
+    | [
+        number[],
+        number[],
+        number[],
+        number[],
+        number[],
+        number[],
+        number[],
+        number[]
+      ]
+    | null;
   /** Optional center point of the region */
   center?: [number, number, number] | null;
 }
