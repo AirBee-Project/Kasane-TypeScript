@@ -110,7 +110,7 @@ export class Kasane {
         return this;
     }
     /**
-     * 実行メソッド
+     * 実行メソッド（複数コマンド対応）
      * @param {string} command_json
      * @returns {string}
      */

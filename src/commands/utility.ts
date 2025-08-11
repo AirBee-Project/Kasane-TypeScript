@@ -25,7 +25,7 @@ export class UtilityCommandsImpl implements UtilityCommands {
   constructor(private executeCommand: (command: any) => Output) {}
 
   getVersion(): string {
-    const result = this.executeCommand({ Version: {} });
+    const result = this.executeCommand("Version");
     if (typeof result === "object" && "Version" in result) {
       return result.Version;
     }
