@@ -2,7 +2,9 @@ import { Kasane } from "../src/index";
 import { Range } from "../src/types";
 
 // WASMファイルを読み込んでKasaneを初期化
-const kasane = await Kasane.init("http://kakurituro/kasane_wasm_001.wasm");
+const kasane = await Kasane.init(
+  "https://kasane-wasm-cdn.pages.dev/kasane_wasm_001.wasm"
+);
 
 let v = kasane.getVersion();
 
@@ -43,15 +45,4 @@ let value = kasane.getValue({
   },
 });
 
-let neko = kasane.select({
-  range: {
-    z: 3,
-    f: [3, 4],
-    x: [5, 2],
-    y: ["-"],
-    i: 0,
-    t: ["-"],
-  },
-});
-
-console.log(neko[0].spacetimeid.f);
+console.log(JSON.stringify(value));
