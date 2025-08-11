@@ -1,12 +1,10 @@
 # Kasane-TypeScript
 
-**Kasane-TypeScript** は、 4 次元時空間データベースエンジンの Kasane の API を提供する TypeScript ラッパーです。WebAssembly を通じて、Web ブラウザーおよび Node.js 環境で空間と時間データを管理するための高レベル API を提供します。
-
-[🇬🇧 English Version](./README.md) | [📚 チュートリアル](./TUTORIAL_JA.md)
+**Kasane-TypeScript** は、4次元時空間データベースエンジンの Kasane の API を提供する TypeScript ラッパーです。WebAssembly を通じて、Web ブラウザーおよび Node.js 環境で空間と時間データを管理するための高レベル API を提供します。
 
 ## 🌱 特長
 
-- **4 次元データ管理**: X、Y、F（高度）、T（時間）次元による時空間データの処理
+- **4次元データ管理**: X、Y、F（高度）、T（時間）次元による時空間データの処理
 - **デュアル ID システム**: 空間 ID（静的位置）と時空間 ID（時間的データ）の両方をサポート
 - **論理演算**: 和集合（OR）、積集合（AND）、補集合（NOT）、排他的論理和（XOR）演算
 - **柔軟な範囲記法**: 範囲、無限境界、複雑なクエリの表現
@@ -26,33 +24,30 @@ npm install kasane-client
 import { Kasane } from "kasane-client";
 
 // WASM URLから初期化
-const kasane = await Kasane.init("https://cdn.example.com/kasane.wasm");
+let kasane = await Kasane.init("https://cdn.example.com/kasane.wasm");
 
 // スペースとキーを作成
-kasane.addSpace({ space: "sensor_data" });
-kasane.addKey({ space: "sensor_data", key: "temperature", type: "INT" });
-kasane.addKey({ space: "sensor_data", key: "location_name", type: "TEXT" });
+kasane.addSpace({ space: "smart_city" });
+let test = kasane.space("smart_city");
+test.addKey({ key: "temperature", type: "INT" });
+test.addKey({ key: "location_name", type: "TEXT" });
 
 // 空間データの保存（静的位置 - 山頂）
-kasane.setValue({
-  space: "sensor_data",
-  key: "location_name",
-  range: { z: 10, x: [100], y: [200], i: 0, f: [1500], t: ["-"] }, // i=0 で空間ID
+let location = test.key("location_name");
+location.setValue({
+  range: { z: 10, x: [100], y: [200], i: 0, f: [1500], t: ["-"] },
   value: "富士山",
 });
 
 // 時間データの保存（センサー読取値）
-kasane.setValue({
-  space: "sensor_data",
-  key: "temperature",
-  range: { z: 10, x: [100], y: [200], i: 60, f: [10], t: [1000] }, // i≠0 で時空間ID
+let temp = test.key("temperature");
+temp.setValue({
+  range: { z: 10, x: [100], y: [200], i: 60, f: [10], t: [1000] },
   value: 25,
 });
 
 // データクエリ
-const values = kasane.getValue({
-  space: "sensor_data",
-  key: "temperature",
+let values = temp.getValue({
   range: { z: 10, x: [100], y: [200], i: 60, f: [10], t: [1000] },
 });
 
@@ -70,7 +65,7 @@ Kasane は`i`パラメータによって空間 ID と時空間 ID を区別し�
 
 ```typescript
 // 空間ID - 静的ランドマーク（永続的な山）
-const mountain = {
+let mountain = {
   z: 10,
   x: [100],
   y: [200],
@@ -80,7 +75,7 @@ const mountain = {
 };
 
 // 時空間ID - センサー読取値（時間とともに変化）
-const sensorReading = {
+let sensorReading = {
   z: 10,
   x: [100],
   y: [200],
@@ -113,10 +108,10 @@ y: ["-"]; // 全てのY座標（任意の値）
 
 ```typescript
 // 点位置
-const point = { z: 10, x: [100], y: [200], f: [50], i: 60, t: [1000] };
+let point = { z: 10, x: [100], y: [200], f: [50], i: 60, t: [1000] };
 
 // エリア範囲
-const area = {
+let area = {
   z: 10,
   x: [100, 200],
   y: [150, 250],
@@ -126,7 +121,7 @@ const area = {
 };
 
 // 無限範囲
-const infiniteHeight = {
+let infiniteHeight = {
   z: 10,
   x: [100],
   y: [200],
@@ -136,7 +131,7 @@ const infiniteHeight = {
 };
 
 // ユーティリティメソッドの使用
-const range = {
+let range = {
   z: 10,
   x: Kasane.range.between(100, 200), // [100, 200]
   y: Kasane.range.single(150), // [150]
@@ -156,10 +151,10 @@ const range = {
 
 ```typescript
 // 基本初期化
-const kasane = await Kasane.init("/path/to/kasane.wasm");
+let kasane = await Kasane.init("/path/to/kasane.wasm");
 
 // デバッグログ付き
-const kasane = await Kasane.init("/path/to/kasane.wasm", true);
+let kasane = await Kasane.init("/path/to/kasane.wasm", true);
 ```
 
 ### スペース管理
@@ -176,78 +171,87 @@ const kasane = await Kasane.init("/path/to/kasane.wasm", true);
 
 全スペース名のリストを返します。
 
+#### `space(name: string)`
+
+スペース操作オブジェクトを返します。
+
 ```typescript
 kasane.addSpace({ space: "smart_city" });
 kasane.addSpace({ space: "weather_data" });
 
-const spaces = kasane.showSpaces();
+let spaces = kasane.showSpaces();
 console.log(spaces); // ["smart_city", "weather_data"]
+
+let test = kasane.space("smart_city");
 
 kasane.deleteSpace({ space: "weather_data" });
 ```
 
 ### キー管理
 
-#### `addKey(params: { space: string, key: string, type: KeyType }): void`
+#### `test.addKey(params: { key: string, type: KeyType }): void`
 
 指定されたデータ型（`"INT"`、`"BOOLEAN"`、または `"TEXT"`）で新しいキーを作成します。
 
-#### `deleteKey(params: { space: string, key: string }): void`
+#### `test.deleteKey(params: { key: string }): void`
 
 既存のキーと関連する全データを削除します。
 
-#### `showKeys(params: { space: string }): string[]`
+#### `test.showKeys(): string[]`
 
 指定されたスペース内の全キーのリストを返します。
 
-```typescript
-kasane.addKey({ space: "smart_city", key: "temperature", type: "INT" });
-kasane.addKey({ space: "smart_city", key: "is_operational", type: "BOOLEAN" });
-kasane.addKey({ space: "smart_city", key: "device_name", type: "TEXT" });
+#### `test.key(name: string)`
 
-const keys = kasane.showKeys({ space: "smart_city" });
+キー操作オブジェクトを返します。
+
+```typescript
+let test = kasane.space("smart_city");
+test.addKey({ key: "temperature", type: "INT" });
+test.addKey({ key: "is_operational", type: "BOOLEAN" });
+test.addKey({ key: "device_name", type: "TEXT" });
+
+let keys = test.showKeys();
 console.log(keys); // ["temperature", "is_operational", "device_name"]
+
+let temp = test.key("temperature");
 ```
 
 ### 値操作
 
-#### `setValue(params: { space: string, key: string, range: Range, value: ValueEntry }): void`
+#### `temp.setValue(params: { range: Range, value: ValueEntry }): void`
 
 値を設定し、**既存データを上書き**します。これがデータ保存の主要メソッドです。
 
-#### `putValue(params: { space: string, key: string, range: Range, value: ValueEntry }): void`
+#### `temp.putValue(params: { range: Range, value: ValueEntry }): void`
 
 指定範囲に**データが存在しない場合のみ**値を追加します。データが既に存在する場合はエラーをスローします。
 
-#### `getValue(params: { space: string, key: string, range: Range, options?: OutputOptions }): GetValueOutput[]`
+#### `temp.getValue(params: { range: Range, options?: OutputOptions }): GetValueOutput[]`
 
 詳細な空間情報付きで値を取得します。
 
-#### `deleteValue(params: { space: string, key: string, range: Range }): void`
+#### `temp.deleteValue(params: { range: Range }): void`
 
 指定範囲の値を削除します。
 
 ```typescript
 // 値設定（既存を上書き）
-kasane.setValue({
-  space: "smart_city",
-  key: "temperature",
+let test = kasane.space("smart_city");
+let temp = test.key("temperature");
+temp.setValue({
   range: { z: 10, x: [100], y: [200], f: [10], i: 300, t: [1000] },
   value: 25,
 });
 
 // オプション付きで値取得
-const values = kasane.getValue({
-  space: "smart_city",
-  key: "temperature",
+let values = temp.getValue({
   range: { z: 10, x: [100], y: [200], f: [10], i: 300, t: [1000] },
   options: { vertex: true, center: true },
 });
 
 // 値削除
-kasane.deleteValue({
-  space: "smart_city",
-  key: "temperature",
+temp.deleteValue({
   range: { z: 10, x: [100], y: [200], f: [10], i: 300, t: [1000] },
 });
 ```
@@ -259,7 +263,7 @@ kasane.deleteValue({
 値を取得せずに時空間領域を選択します。空間解析に有用です。
 
 ```typescript
-const regions = kasane.select({
+let regions = kasane.select({
   range: {
     OR: [
       { z: 10, x: [100], y: [200], f: [10], i: 300, t: [1000] },
@@ -278,7 +282,7 @@ Kasane は範囲を組み合わせるための複雑な論理演算をサポー�
 
 ```typescript
 // OR演算 - 範囲の和集合
-const orRange = {
+let orRange = {
   OR: [
     { z: 10, x: [100], y: [200], f: [10], i: 60, t: [1000] },
     { z: 10, x: [101], y: [201], f: [10], i: 60, t: [1000] },
@@ -286,7 +290,7 @@ const orRange = {
 };
 
 // AND演算 - 範囲の積集合
-const andRange = {
+let andRange = {
   AND: [
     {
       z: 10,
@@ -308,7 +312,7 @@ const andRange = {
 };
 
 // XOR演算 - 排他的論理和
-const xorRange = {
+let xorRange = {
   XOR: [
     { z: 10, x: [100, 200], y: [100, 200], f: [10], i: 60, t: [1000] },
     { z: 10, x: [150, 250], y: [150, 250], f: [10], i: 60, t: [1000] },
@@ -316,7 +320,7 @@ const xorRange = {
 };
 
 // NOT演算 - 補集合
-const notRange = {
+let notRange = {
   NOT: [{ z: 10, x: [100, 200], y: [100, 200], f: [10], i: 60, t: [1000] }],
 };
 ```
@@ -325,7 +329,7 @@ const notRange = {
 
 ```typescript
 // Kasane.rangeヘルパーメソッドの使用
-const complexRange = Kasane.range.and(
+let complexRange = Kasane.range.and(
   { z: 10, x: [100, 200], y: [100, 200], f: [0, 100], i: 60, t: [1000, 2000] },
   Kasane.range.or(
     { z: 10, x: [150], y: [150], f: [50], i: 60, t: [1500] },
@@ -342,7 +346,7 @@ Kasane は値に基づいたデータクエリのための型安全フィルタ�
 
 ```typescript
 // 整数フィルター
-const temperatureRange = {
+let temperatureRange = {
   Filter: {
     space: "smart_city",
     key: "temperature",
@@ -351,7 +355,7 @@ const temperatureRange = {
 };
 
 // ブールフィルター
-const operationalDevices = {
+let operationalDevices = {
   Filter: {
     space: "smart_city",
     key: "is_operational",
@@ -360,7 +364,7 @@ const operationalDevices = {
 };
 
 // テキストフィルター
-const deviceNames = {
+let deviceNames = {
   Filter: {
     space: "smart_city",
     key: "device_name",
@@ -369,7 +373,7 @@ const deviceNames = {
 };
 
 // 存在チェック（特定の値フィルターなし）
-const hasData = {
+let hasData = {
   HasValue: {
     space: "smart_city",
     key: "temperature",
@@ -381,12 +385,12 @@ const hasData = {
 
 ```typescript
 // 整数フィルターヘルパー
-const intFilter = Kasane.filter.int.between(20, 30);
-const boolFilter = Kasane.filter.boolean.isTrue();
-const textFilter = Kasane.filter.text.contains("sensor");
+let intFilter = Kasane.filter.int.between(20, 30);
+let boolFilter = Kasane.filter.boolean.isTrue();
+let textFilter = Kasane.filter.text.contains("sensor");
 
 // フィルター範囲の作成
-const filterRange = Kasane.range.filter("smart_city", "temperature", intFilter);
+let filterRange = Kasane.range.filter("smart_city", "temperature", intFilter);
 ```
 
 ## 📊 出力オプション
@@ -395,7 +399,7 @@ const filterRange = Kasane.range.filter("smart_city", "temperature", intFilter);
 
 ```typescript
 // 全情報
-const allInfo = kasane.getValue({
+let allInfo = kasane.getValue({
   space: "smart_city",
   key: "temperature",
   range: someRange,
@@ -403,7 +407,7 @@ const allInfo = kasane.getValue({
 });
 
 // 空間情報のみ
-const spatialInfo = kasane.getValue({
+let spatialInfo = kasane.getValue({
   space: "smart_city",
   key: "temperature",
   range: someRange,
@@ -411,7 +415,7 @@ const spatialInfo = kasane.getValue({
 });
 
 // カスタムオプション
-const customInfo = kasane.getValue({
+let customInfo = kasane.getValue({
   space: "smart_city",
   key: "temperature",
   range: someRange,
@@ -430,7 +434,7 @@ const customInfo = kasane.getValue({
 
 ```typescript
 // システム初期化
-const kasane = await Kasane.init("/path/to/kasane.wasm");
+let kasane = await Kasane.init("/path/to/kasane.wasm");
 
 // データベースセットアップ
 kasane.addSpace({ space: "smart_city" });
@@ -440,7 +444,7 @@ kasane.addKey({ space: "smart_city", key: "air_quality", type: "TEXT" });
 kasane.addKey({ space: "smart_city", key: "is_operational", type: "BOOLEAN" });
 
 // 市内全域のセンサーデータを保存
-const sensors = [
+let sensors = [
   {
     x: 100,
     y: 100,
@@ -468,7 +472,7 @@ const sensors = [
 ];
 
 sensors.forEach((sensor, index) => {
-  const baseRange = {
+  let baseRange = {
     z: 10,
     x: [sensor.x],
     y: [sensor.y],
@@ -504,7 +508,7 @@ sensors.forEach((sensor, index) => {
 });
 
 // 高温エリアのクエリ
-const hotAreas = kasane.getValue({
+let hotAreas = kasane.getValue({
   space: "smart_city",
   key: "temperature",
   range: {
@@ -551,7 +555,7 @@ kasane.setValue({
 });
 
 // 山岳地帯の気象データを検索
-const mountainWeather = kasane.getValue({
+let mountainWeather = kasane.getValue({
   space: "weather",
   key: "rainfall",
   range: {
@@ -576,7 +580,7 @@ const mountainWeather = kasane.getValue({
 ### バージョン情報
 
 ```typescript
-const version = kasane.getVersion();
+let version = kasane.getVersion();
 console.log(`Kasane WASMバージョン: ${version}`);
 ```
 
@@ -584,20 +588,20 @@ console.log(`Kasane WASMバージョン: ${version}`);
 
 ```typescript
 // 範囲作成ヘルパー
-const singlePoint = Kasane.range.single(100); // [100]
-const rangeValues = Kasane.range.between(100, 200); // [100, 200]
-const openRange = Kasane.range.after(100); // [100, "-"]
-const anyValue = Kasane.range.any(); // ["-"]
+let singlePoint = Kasane.range.single(100); // [100]
+let rangeValues = Kasane.range.between(100, 200); // [100, 200]
+let openRange = Kasane.range.after(100); // [100, "-"]
+let anyValue = Kasane.range.any(); // ["-"]
 
 // 論理演算ヘルパー
-const orOperation = Kasane.range.or(range1, range2, range3);
-const andOperation = Kasane.range.and(range1, range2);
-const notOperation = Kasane.range.not(range1);
+let orOperation = Kasane.range.or(range1, range2, range3);
+let andOperation = Kasane.range.and(range1, range2);
+let notOperation = Kasane.range.not(range1);
 
 // フィルターヘルパー
-const numericFilter = Kasane.filter.int.between(10, 20);
-const textFilter = Kasane.filter.text.startsWith("sensor_");
-const boolFilter = Kasane.filter.boolean.isTrue();
+let numericFilter = Kasane.filter.int.between(10, 20);
+let textFilter = Kasane.filter.text.startsWith("sensor_");
+let boolFilter = Kasane.filter.boolean.isTrue();
 ```
 
 ## 📋 完全 API リファレンス
