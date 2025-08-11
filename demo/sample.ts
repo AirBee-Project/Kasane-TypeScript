@@ -44,3 +44,9 @@ let value = kasane.getValue({
 });
 
 console.log(JSON.stringify(value));
+
+let test = kasane.space("smart_city");
+test.showKeys();
+test.addKey({ key: "tomoro", type: "BOOLEAN" });
+
+let a = test.key("tomoro");

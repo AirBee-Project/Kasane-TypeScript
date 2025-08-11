@@ -1,4 +1,6 @@
-import type { Output } from "../types/index.js";
+import type { Output, KeyType } from "../types/index.js";
+import { KeysInfo } from "../types/response.js";
+import { KeyCommandsImpl } from "./key.js";
 
 /**
  * Space operation commands for managing database spaces (schemas).
@@ -38,12 +40,30 @@ export interface SpaceCommands {
    *
    * @example
    * ```typescript
-   * const spaces = kasane.getSpaces();
+   * const spaces = kasane.showSpaces();
    * console.log("Available spaces:", spaces);
    * // Output: ["sensor_data", "user_locations"]
    * ```
    */
-  getSpaces(): string[];
+  showSpaces(): string[];
+
+  /**
+   * Returns an object for key operations within a specific space.
+   *
+   * @param space Name of the space to operate on
+   *
+   * @example
+   * ```typescript
+   * const space = kasane.space("neko");
+   * space.showKeys();
+   * space.addKey({ key: "age", type: "INT" });
+   * ```
+   */
+  space(space: string): {
+    showKeys(): string[];
+    addKey(params: { key: string; type: KeyType }): void;
+    deleteKey(params: { key: string }): void;
+  };
 }
 
 /**
@@ -60,11 +80,31 @@ export class SpaceCommandsImpl implements SpaceCommands {
     this.executeCommand({ DeleteSpace: { spacename: params.space } });
   }
 
-  getSpaces(): string[] {
+  showSpaces(): string[] {
     const result = this.executeCommand({ Spaces: {} });
     if (typeof result === "object" && "SpaceNames" in result) {
       return result.SpaceNames;
     }
-    throw new Error("Unexpected response format for getSpaces");
+    throw new Error("Unexpected response format for showSpaces");
+  }
+
+  keysInfo(params: { space: string }): KeysInfo {
+    let result = this.executeCommand({ KeysInfo: { spacename: params.space } });
+    if (typeof result === "object" && "KeysInfo" in result) {
+      return result.KeysInfo;
+    }
+    throw new Error("Unexpected response format for showSpaces");
+  }
+
+  space(space: string) {
+    const keyCommands = new KeyCommandsImpl(this.executeCommand);
+    return {
+      showKeys: () => keyCommands.showKeys({ space }),
+      addKey: ({ key, type }: { key: string; type: KeyType }) =>
+        keyCommands.addKey({ space, key, type }),
+      deleteKey: ({ key }: { key: string }) =>
+        keyCommands.deleteKey({ space, key }),
+      key: (name: string) => keyCommands.key(space, name),
+    };
   }
 }

@@ -278,13 +278,13 @@ export class Kasane {
    *
    * @example
    * ```typescript
-   * const spaces = kasane.getSpaces();
+   * const spaces = kasane.showSpaces();
    * console.log("Available spaces:", spaces);
    * // Output: ["sensor_data", "user_locations"]
    * ```
    */
-  getSpaces(): string[] {
-    return this.spaceCommands.getSpaces();
+  showSpaces(): string[] {
+    return this.spaceCommands.showSpaces();
   }
 
   // ========== Key Operations ==========
@@ -333,13 +333,13 @@ export class Kasane {
    *
    * @example
    * ```typescript
-   * const keys = kasane.getKeys({ space: "sensor_data" });
+   * const keys = kasane.showKeys({ space: "sensor_data" });
    * console.log("Keys in sensor_data:", keys);
    * // Output: ["temperature", "humidity", "is_active"]
    * ```
    */
-  getKeys(params: { space: string }): string[] {
-    return this.keyCommands.getKeys(params);
+  showKeys(params: { space: string }): string[] {
+    return this.keyCommands.showKeys(params);
   }
 
   // ========== Value Operations ==========
@@ -595,4 +595,9 @@ export class Kasane {
    * Static output option helpers for configuring getValue and select operations.
    */
   static options = StaticMethods.options;
+
+  ///編集中
+  space(name: string) {
+    return this.spaceCommands.space(name);
+  }
 }
