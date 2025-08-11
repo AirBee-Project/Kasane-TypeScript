@@ -3,26 +3,19 @@ import { KeysInfo } from "../types/response.js";
 import { KeyCommandsImpl } from "./key.js";
 
 /**
- * Space operation commands for managing database spaces (schemas).
+ * Space operations for managing database spaces.
  */
 export interface SpaceCommands {
   /**
-   * Creates a new space (database) with the specified name.
-   *
-   * @param params Object containing space name
-   * @param params.space Name of the space to create
-   *
-   * @example
-   * ```typescript
-   * kasane.addSpace({ space: "sensor_data" });
-   * kasane.addSpace({ space: "user_locations" });
-   * ```
+   * Creates a new space.
+   * @param params.space Name of the space
    */
   addSpace(params: { space: string }): void;
 
   /**
-   * Deletes an existing space and all its data.
-   *
+   * Deletes a space and all its data.
+   * @param params.space Name of the space
+   */
    * @param params Object containing space name
    * @param params.space Name of the space to delete
    *

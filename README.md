@@ -1,116 +1,116 @@
 # Kasane-TypeScript
 
-**Kasane-TypeScript** は、4次元時空間データベースエンジンの Kasane の API を提供する TypeScript ラッパーです。WebAssembly を通じて、Web ブラウザーおよび Node.js 環境で空間と時間データを管理するための高レベル API を提供します。
+**Kasane-TypeScript** is a TypeScript wrapper that provides API for Kasane 4-dimensional space-time database engine. It provides high-level API for managing spatial and temporal data in web browsers and Node.js through WebAssembly.
 
-## 🌱 特長
+## 🌱 Features
 
-- **4次元データ管理**: X、Y、F（高度）、T（時間）次元による時空間データの処理
-- **デュアル ID システム**: 空間 ID（静的位置）と時空間 ID（時間的データ）の両方をサポート
-- **論理演算**: 和集合（OR）、積集合（AND）、補集合（NOT）、排他的論理和（XOR）演算
-- **柔軟な範囲記法**: 範囲、無限境界、複雑なクエリの表現
-- **型安全 API**: 包括的な型定義による完全な TypeScript サポート
-- **値フィルタリング**: 型安全フィルターによる値条件でのデータクエリ
-- **WebAssembly 駆動**: Rust ベースの WASM コアによるクロスプラットフォーム対応
+- **4D Data Management**: Process space-time data with X, Y, F (altitude), T (time) dimensions
+- **Dual ID System**: Support both Space ID (static position) and Space-Time ID (temporal data)
+- **Logical Operations**: Union (OR), intersection (AND), complement (NOT), exclusive or (XOR) operations
+- **Flexible Range Notation**: Express ranges, infinite boundaries, complex queries
+- **Type-safe API**: Complete TypeScript support with comprehensive type definitions
+- **Value Filtering**: Query data with value conditions using type-safe filters
+- **WebAssembly Powered**: Cross-platform support with Rust-based WASM core
 
-## 📦 インストール
+## 📦 Installation
 
 ```bash
 npm install kasane-client
 ```
 
-## 🚀 クイックスタート
+## 🚀 Quick Start
 
 ```typescript
 import { Kasane } from "kasane-client";
 
-// WASM URLから初期化
+// Initialize from WASM URL
 let kasane = await Kasane.init("https://cdn.example.com/kasane.wasm");
 
-// スペースとキーを作成
+// Create space and keys
 kasane.addSpace({ space: "smart_city" });
 let test = kasane.space("smart_city");
 test.addKey({ key: "temperature", type: "INT" });
 test.addKey({ key: "location_name", type: "TEXT" });
 
-// 空間データの保存（静的位置 - 山頂）
+// Store spatial data (static position - mountain peak)
 let location = test.key("location_name");
 location.setValue({
   range: { z: 10, x: [100], y: [200], i: 0, f: [1500], t: ["-"] },
-  value: "富士山",
+  value: "Mount Fuji",
 });
 
-// 時間データの保存（センサー読取値）
+// Store temporal data (sensor reading)
 let temp = test.key("temperature");
 temp.setValue({
   range: { z: 10, x: [100], y: [200], i: 60, f: [10], t: [1000] },
   value: 25,
 });
 
-// データクエリ
+// Query data
 let values = temp.getValue({
   range: { z: 10, x: [100], y: [200], i: 60, f: [10], t: [1000] },
 });
 
-console.log("温度:", values[0].value);
+console.log("Temperature:", values[0].value);
 ```
 
-## 🔍 空間 ID と時空間 ID
+## 🔍 Space ID and Space-Time ID
 
-Kasane は`i`パラメータによって空間 ID と時空間 ID を区別します：
+Kasane distinguishes Space ID and Space-Time ID using `i` parameter:
 
-- **空間 ID** (`i = 0`, `t = ["-"]`): 山や川、建物など、時間の経過によって変化しない静的な空間情報を表現
-- **時空間 ID** (`i ≠ 0`): センサー値や移動物体など、時間によって変化する情報を表現
+- **Space ID** (`i = 0`, `t = ["-"]`): Express static spatial information like mountains, rivers, buildings that do not change over time
+- **Space-Time ID** (`i ≠ 0`): Express information that changes over time like sensor values, moving objects
 
-両タイプは論理演算（AND、OR、XOR、NOT）を使って相互に演算でき、複雑な時空間クエリを作成できます。
+Both types can operate with each other using logical operations (AND, OR, XOR, NOT) to create complex space-time queries.
 
 ```typescript
-// 空間ID - 静的ランドマーク（永続的な山）
+// Space ID - static landmark (permanent mountain)
 let mountain = {
   z: 10,
   x: [100],
   y: [200],
-  f: [1500, 2000], // 高度範囲 1500-2000m
-  i: 0, // i=0 は空間IDを示す
-  t: ["-"], // t="Any" で全時間期間
+  f: [1500, 2000], // altitude range 1500-2000m
+  i: 0, // i=0 indicates Space ID
+  t: ["-"], // t="Any" for all time periods
 };
 
-// 時空間ID - センサー読取値（時間とともに変化）
+// Space-Time ID - sensor reading (changes over time)
 let sensorReading = {
   z: 10,
   x: [100],
   y: [200],
-  f: [10], // 高度10m
-  i: 300, // i≠0 で300秒間隔
-  t: [1000, 1010], // 時間インデックス範囲
+  f: [10], // altitude 10m
+  i: 300, // i≠0 for 300 second interval
+  t: [1000, 1010], // time index range
 };
 ```
 
-## 📐 値の記法と範囲指定
+## 📐 Value Notation and Range Specification
 
-### DimensionRange 形式
+### DimensionRange Format
 
-Kasane は次元範囲を指定するために標準化された配列ベースの記法を使用します：
+Kasane uses standardized array-based notation to specify dimension ranges:
 
 ```typescript
-// 単一値
-f: [100]; // 高度ちょうど100
+// Single value
+f: [100]; // altitude exactly 100
 
-// 範囲（包含的）
-x: [100, 200]; // X座標100から200まで
+// Range (inclusive)
+x: [100, 200]; // X coordinate from 100 to 200
 
-// 無制限範囲
-f: ["-", 100]; // 高度100まで全て
-x: [200, "-"]; // X座標200から無限大まで
-y: ["-"]; // 全てのY座標（任意の値）
+// Unlimited range
+f: ["-", 100]; // all altitudes up to 100
+x: [200, "-"]; // X coordinate from 200 to infinity
+y: ["-"]; // all Y coordinates (any value)
 ```
 
-### 複雑な範囲の例
+### Complex Range Examples
 
 ```typescript
-// 点位置
+// Point position
 let point = { z: 10, x: [100], y: [200], f: [50], i: 60, t: [1000] };
 
-// エリア範囲
+// Area range
 let area = {
   z: 10,
   x: [100, 200],
@@ -120,7 +120,7 @@ let area = {
   t: [1000, 2000],
 };
 
-// 無限範囲
+// Infinite range
 let infiniteHeight = {
   z: 10,
   x: [100],
@@ -130,7 +130,7 @@ let infiniteHeight = {
   t: ["-"],
 };
 
-// ユーティリティメソッドの使用
+// Using utility methods
 let range = {
   z: 10,
   x: Kasane.range.between(100, 200), // [100, 200]
@@ -141,39 +141,39 @@ let range = {
 };
 ```
 
-## 🔧 API リファレンス
+## 🔧 API Reference
 
-### 初期化
+### Initialization
 
 #### `Kasane.init(wasmUrl: string, debug?: boolean): Promise<Kasane>`
 
-指定された URL から WASM モジュールを読み込んで Kasane を初期化します。
+Initialize Kasane by loading WASM module from specified URL.
 
 ```typescript
-// 基本初期化
+// Basic initialization
 let kasane = await Kasane.init("/path/to/kasane.wasm");
 
-// デバッグログ付き
+// With debug logging
 let kasane = await Kasane.init("/path/to/kasane.wasm", true);
 ```
 
-### スペース管理
+### Space Management
 
 #### `addSpace(params: { space: string }): void`
 
-新しいスペース（データベース）を作成します。
+Create new space (database).
 
 #### `deleteSpace(params: { space: string }): void`
 
-既存のスペースとその全データを削除します。
+Delete existing space and all its data.
 
 #### `showSpaces(): string[]`
 
-全スペース名のリストを返します。
+Return list of all space names.
 
 #### `space(name: string)`
 
-スペース操作オブジェクトを返します。
+Return space operation object.
 
 ```typescript
 kasane.addSpace({ space: "smart_city" });
@@ -187,23 +187,23 @@ let test = kasane.space("smart_city");
 kasane.deleteSpace({ space: "weather_data" });
 ```
 
-### キー管理
+### Key Management
 
 #### `test.addKey(params: { key: string, type: KeyType }): void`
 
-指定されたデータ型（`"INT"`、`"BOOLEAN"`、または `"TEXT"`）で新しいキーを作成します。
+Create new key with specified data type ("INT", "BOOLEAN", or "TEXT").
 
 #### `test.deleteKey(params: { key: string }): void`
 
-既存のキーと関連する全データを削除します。
+Delete existing key and all related data.
 
 #### `test.showKeys(): string[]`
 
-指定されたスペース内の全キーのリストを返します。
+Return list of all keys in specified space.
 
 #### `test.key(name: string)`
 
-キー操作オブジェクトを返します。
+Return key operation object.
 
 ```typescript
 let test = kasane.space("smart_city");
@@ -217,26 +217,26 @@ console.log(keys); // ["temperature", "is_operational", "device_name"]
 let temp = test.key("temperature");
 ```
 
-### 値操作
+### Value Operations
 
 #### `temp.setValue(params: { range: Range, value: ValueEntry }): void`
 
-値を設定し、**既存データを上書き**します。これがデータ保存の主要メソッドです。
+Set value and **overwrite existing data**. This is the main method for data storage.
 
 #### `temp.putValue(params: { range: Range, value: ValueEntry }): void`
 
-指定範囲に**データが存在しない場合のみ**値を追加します。データが既に存在する場合はエラーをスローします。
+Add value **only if data does not exist** in specified range. Throws error if data already exists.
 
 #### `temp.getValue(params: { range: Range, options?: OutputOptions }): GetValueOutput[]`
 
-詳細な空間情報付きで値を取得します。
+Get values with detailed spatial information.
 
 #### `temp.deleteValue(params: { range: Range }): void`
 
-指定範囲の値を削除します。
+Delete values in specified range.
 
 ```typescript
-// 値設定（既存を上書き）
+// Set value (overwrite existing)
 let test = kasane.space("smart_city");
 let temp = test.key("temperature");
 temp.setValue({
@@ -244,23 +244,23 @@ temp.setValue({
   value: 25,
 });
 
-// オプション付きで値取得
+// Get value with options
 let values = temp.getValue({
   range: { z: 10, x: [100], y: [200], f: [10], i: 300, t: [1000] },
   options: { vertex: true, center: true },
 });
 
-// 値削除
+// Delete value
 temp.deleteValue({
   range: { z: 10, x: [100], y: [200], f: [10], i: 300, t: [1000] },
 });
 ```
 
-### クエリ操作
+### Query Operations
 
 #### `select(params: { range: Range, options?: OutputOptions }): SelectOutput[]`
 
-値を取得せずに時空間領域を選択します。空間解析に有用です。
+Select space-time regions without getting values. Useful for spatial analysis.
 
 ```typescript
 let regions = kasane.select({
@@ -274,14 +274,14 @@ let regions = kasane.select({
 });
 ```
 
-## 🔀 論理演算
+## 🔀 Logical Operations
 
-Kasane は範囲を組み合わせるための複雑な論理演算をサポートします：
+Kasane supports complex logical operations to combine ranges:
 
-### 基本論理演算
+### Basic Logical Operations
 
 ```typescript
-// OR演算 - 範囲の和集合
+// OR operation - union of ranges
 let orRange = {
   OR: [
     { z: 10, x: [100], y: [200], f: [10], i: 60, t: [1000] },
@@ -289,7 +289,7 @@ let orRange = {
   ],
 };
 
-// AND演算 - 範囲の積集合
+// AND operation - intersection of ranges
 let andRange = {
   AND: [
     {
@@ -311,7 +311,7 @@ let andRange = {
   ],
 };
 
-// XOR演算 - 排他的論理和
+// XOR operation - exclusive or
 let xorRange = {
   XOR: [
     { z: 10, x: [100, 200], y: [100, 200], f: [10], i: 60, t: [1000] },
@@ -319,16 +319,16 @@ let xorRange = {
   ],
 };
 
-// NOT演算 - 補集合
+// NOT operation - complement
 let notRange = {
   NOT: [{ z: 10, x: [100, 200], y: [100, 200], f: [10], i: 60, t: [1000] }],
 };
 ```
 
-### 静的ヘルパーメソッドの使用
+### Using Static Helper Methods
 
 ```typescript
-// Kasane.rangeヘルパーメソッドの使用
+// Using Kasane.range helper methods
 let complexRange = Kasane.range.and(
   { z: 10, x: [100, 200], y: [100, 200], f: [0, 100], i: 60, t: [1000, 2000] },
   Kasane.range.or(
@@ -338,14 +338,14 @@ let complexRange = Kasane.range.and(
 );
 ```
 
-## 🎯 値フィルタリング
+## 🎯 Value Filtering
 
-Kasane は値に基づいたデータクエリのための型安全フィルタリングを提供します：
+Kasane provides type-safe filtering for data queries based on values:
 
-### フィルター操作
+### Filter Operations
 
 ```typescript
-// 整数フィルター
+// Integer filter
 let temperatureRange = {
   Filter: {
     space: "smart_city",
@@ -354,7 +354,7 @@ let temperatureRange = {
   },
 };
 
-// ブールフィルター
+// Boolean filter
 let operationalDevices = {
   Filter: {
     space: "smart_city",
@@ -363,7 +363,7 @@ let operationalDevices = {
   },
 };
 
-// テキストフィルター
+// Text filter
 let deviceNames = {
   Filter: {
     space: "smart_city",
@@ -372,7 +372,7 @@ let deviceNames = {
   },
 };
 
-// 存在チェック（特定の値フィルターなし）
+// Existence check (no specific value filter)
 let hasData = {
   HasValue: {
     space: "smart_city",
@@ -381,24 +381,24 @@ let hasData = {
 };
 ```
 
-### 静的フィルターメソッドの使用
+### Using Static Filter Methods
 
 ```typescript
-// 整数フィルターヘルパー
+// Integer filter helpers
 let intFilter = Kasane.filter.int.between(20, 30);
 let boolFilter = Kasane.filter.boolean.isTrue();
 let textFilter = Kasane.filter.text.contains("sensor");
 
-// フィルター範囲の作成
+// Creating filter ranges
 let filterRange = Kasane.range.filter("smart_city", "temperature", intFilter);
 ```
 
-## 📊 出力オプション
+## 📊 Output Options
 
-`getValue`と`select`操作で返される情報を設定します：
+Configure information returned by `getValue` and `select` operations:
 
 ```typescript
-// 全情報
+// All information
 let allInfo = kasane.getValue({
   space: "smart_city",
   key: "temperature",
@@ -406,37 +406,37 @@ let allInfo = kasane.getValue({
   options: Kasane.options.all(),
 });
 
-// 空間情報のみ
+// Spatial information only
 let spatialInfo = kasane.getValue({
   space: "smart_city",
-  key: "temperature",
+  key: "temperature", 
   range: someRange,
   options: Kasane.options.spatial(),
 });
 
-// カスタムオプション
+// Custom options
 let customInfo = kasane.getValue({
   space: "smart_city",
   key: "temperature",
   range: someRange,
   options: {
-    vertex: true, // 8つの角頂点を含む
-    center: true, // 中心点を含む
-    id_string: true, // 文字列表現を含む
-    id_pure: false, // IPAの定義通りの（拡張していない）IDで出力
+    vertex: true, // include 8 corner vertices
+    center: true, // include center point
+    id_string: true, // include string representation
+    id_pure: false, // output with IPA standard (non-extended) ID
   },
 });
 ```
 
-## 🧪 使用例
+## 🧪 Usage Examples
 
-### スマートシティセンサーネットワーク
+### Smart City Sensor Network
 
 ```typescript
-// システム初期化
+// System initialization
 let kasane = await Kasane.init("/path/to/kasane.wasm");
 
-// データベースセットアップ
+// Database setup
 kasane.addSpace({ space: "smart_city" });
 let city = kasane.space("smart_city");
 city.addKey({ key: "temperature", type: "INT" });
@@ -444,7 +444,7 @@ city.addKey({ key: "humidity", type: "INT" });
 city.addKey({ key: "air_quality", type: "TEXT" });
 city.addKey({ key: "is_operational", type: "BOOLEAN" });
 
-// 市内全域のセンサーデータを保存
+// Store sensor data across the city
 let sensors = [
   {
     x: 100,
@@ -493,7 +493,7 @@ sensors.forEach((sensor, index) => {
   operationalKey.setValue({ range: baseRange, value: sensor.operational });
 });
 
-// 高温エリアのクエリ
+// Query hot areas
 let hotAreas = tempKey.getValue({
   range: {
     AND: [
@@ -509,13 +509,13 @@ let hotAreas = tempKey.getValue({
   },
 });
 
-console.log(`${hotAreas.length}個の高温エリアが見つかりました`);
+console.log(`Found ${hotAreas.length} hot areas`);
 ```
 
-### 空間データと時間データの統合
+### Spatial and Temporal Data Integration
 
 ```typescript
-// 静的地理的特徴の保存（空間ID）
+// Store static geographical features (Space ID)
 kasane.addSpace({ space: "geography" });
 let geography = kasane.space("geography");
 geography.addKey({ key: "elevation", type: "INT" });
@@ -529,26 +529,26 @@ elevation.setValue({
     i: 0,
     t: ["-"],
   },
-  value: 650, // 平均標高
+  value: 650, // average elevation
 });
 
-// 動的気象データの保存（時空間ID）
+// Store dynamic weather data (Space-Time ID)
 kasane.addSpace({ space: "weather" });
 let weather = kasane.space("weather");
 weather.addKey({ key: "rainfall", type: "INT" });
 let rainfall = weather.key("rainfall");
 rainfall.setValue({
-  range: { z: 8, x: [1050], y: [2050], f: [10], i: 3600, t: [24] }, // 時間単位データ
-  value: 5.2, // mm/時
+  range: { z: 8, x: [1050], y: [2050], f: [10], i: 3600, t: [24] }, // hourly data
+  value: 5.2, // mm/hour
 });
 
-// 山岳地帯の気象データを検索
+// Search weather data in mountainous areas
 let mountainWeather = rainfall.getValue({
   range: {
     AND: [
-      // 気象観測地点
+      // weather observation points
       { z: 8, x: [1000, 1100], y: [2000, 2100], f: [10], i: 3600, t: [20, 30] },
-      // 高標高エリア（空間フィルター）
+      // high elevation areas (spatial filter)
       {
         Filter: {
           space: "geography",
@@ -561,73 +561,73 @@ let mountainWeather = rainfall.getValue({
 });
 ```
 
-## 🛠️ ユーティリティメソッド
+## 🛠️ Utility Methods
 
-### バージョン情報
+### Version Information
 
 ```typescript
 let version = kasane.getVersion();
-console.log(`Kasane WASMバージョン: ${version}`);
+console.log(`Kasane WASM version: ${version}`);
 ```
 
-### 静的ユーティリティ
+### Static Utilities
 
 ```typescript
-// 範囲作成ヘルパー
+// Range creation helpers
 let singlePoint = Kasane.range.single(100); // [100]
 let rangeValues = Kasane.range.between(100, 200); // [100, 200]
 let openRange = Kasane.range.after(100); // [100, "-"]
 let anyValue = Kasane.range.any(); // ["-"]
 
-// 論理演算ヘルパー
+// Logical operation helpers
 let orOperation = Kasane.range.or(range1, range2, range3);
 let andOperation = Kasane.range.and(range1, range2);
 let notOperation = Kasane.range.not(range1);
 
-// フィルターヘルパー
+// Filter helpers
 let numericFilter = Kasane.filter.int.between(10, 20);
 let textFilter = Kasane.filter.text.startsWith("sensor_");
 let boolFilter = Kasane.filter.boolean.isTrue();
 ```
 
-## 📋 完全 API リファレンス
+## 📋 Complete API Reference
 
-### コア型
+### Core Types
 
-- `Range`: 論理演算をサポートする時空間範囲指定
-- `SpaceTimeId`: z、f、x、y、i、t 次元を持つ 4D 識別子
-- `DimensionRange`: 次元用の配列ベース範囲記法
-- `ValueEntry`: データ値（数値、文字列、ブール値）
-- `KeyType`: データ型指定（"INT"、"BOOLEAN"、"TEXT"）
+- `Range`: Space-time range specification with logical operation support
+- `SpaceTimeId`: 4D identifier with z, f, x, y, i, t dimensions
+- `DimensionRange`: Array-based range notation for dimensions
+- `ValueEntry`: Data values (numeric, string, boolean)
+- `KeyType`: Data type specification ("INT", "BOOLEAN", "TEXT")
 
-### メソッドカテゴリ
+### Method Categories
 
-- **初期化**: `Kasane.init()`
-- **スペース管理**: `addSpace()`、`deleteSpace()`、`showSpaces()`
-- **キー管理**: `addKey()`、`deleteKey()`、`showKeys()`
-- **値操作**: `setValue()`、`putValue()`、`getValue()`、`deleteValue()`
-- **クエリ操作**: `select()`
-- **ユーティリティ**: `getVersion()`
+- **Initialization**: `Kasane.init()`
+- **Space Management**: `addSpace()`, `deleteSpace()`, `showSpaces()`
+- **Key Management**: `addKey()`, `deleteKey()`, `showKeys()`
+- **Value Operations**: `setValue()`, `putValue()`, `getValue()`, `deleteValue()`
+- **Query Operations**: `select()`
+- **Utilities**: `getVersion()`
 
-### 静的ヘルパー
+### Static Helpers
 
-- **範囲作成**: `Kasane.range.*`
-- **フィルター作成**: `Kasane.filter.*`
-- **出力オプション**: `Kasane.options.*`
+- **Range Creation**: `Kasane.range.*`
+- **Filter Creation**: `Kasane.filter.*`
+- **Output Options**: `Kasane.options.*`
 
-## 🤝 コントリビューション
+## 🤝 Contributing
 
-バグレポート、機能リクエスト、ドキュメント改善、コード拡張など、あらゆる貢献を歓迎します。
+We welcome all contributions including bug reports, feature requests, documentation improvements, and code enhancements.
 
-## 📄 ライセンス
+## 📄 License
 
-このプロジェクトは基盤となる Kasane WASM ライブラリのライセンス条項に従います。
+This project follows the license terms of the underlying Kasane WASM library.
 
-## 🔗 関連プロジェクト
+## 🔗 Related Projects
 
-- [Kasane Logic](https://github.com/AirBee-Project/Kasane) - 時空間アルゴリズムを提供するコア Rust ライブラリ
-- [Kasane WASM](https://github.com/AirBee-Project/Kasane) - Kasane logic ライブラリの WebAssembly バインディング
+- [Kasane Logic](https://github.com/AirBee-Project/Kasane) - Core Rust library providing space-time algorithms
+- [Kasane WASM](https://github.com/AirBee-Project/Kasane) - WebAssembly bindings for Kasane logic library
 
 ---
 
-詳細な使用例とステップバイステップのチュートリアルについては、[チュートリアル](./TUTORIAL_JA.md)をご覧ください。
+For detailed usage examples and step-by-step tutorials, see [Tutorial](./TUTORIAL_JA.md).

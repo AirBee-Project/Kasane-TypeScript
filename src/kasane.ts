@@ -121,6 +121,11 @@ export class Kasane {
    * const kasane = await Kasane.init("/assets/kasane.wasm", true);
    * ```
    */
+  /**
+   * Initializes Kasane from WASM URL.
+   * @param wasmUrl URL to kasane.wasm file
+   * @param debug Enable debug logging
+   */
   static async init(wasmUrl: string, debug = false): Promise<Kasane> {
     await initWasm(wasmUrl);
     const instance = new WasmKasane();
@@ -241,47 +246,23 @@ export class Kasane {
   // ========== Space Operations ==========
 
   /**
-   * Creates a new space (database) with the specified name.
-   *
-   * @param params Object containing space name
-   * @param params.space Name of the space to create
-   *
-   * @example
-   * ```typescript
-   * kasane.addSpace({ space: "sensor_data" });
-   * kasane.addSpace({ space: "user_locations" });
-   * ```
+   * Creates a new space.
+   * @param params.space Name of the space
    */
   addSpace(params: { space: string }): void {
     return this.spaceCommands.addSpace(params);
   }
 
   /**
-   * Deletes an existing space and all its data.
-   *
-   * @param params Object containing space name
-   * @param params.space Name of the space to delete
-   *
-   * @example
-   * ```typescript
-   * kasane.deleteSpace({ space: "old_sensor_data" });
-   * ```
+   * Deletes a space and all its data.
+   * @param params.space Name of the space
    */
   deleteSpace(params: { space: string }): void {
     return this.spaceCommands.deleteSpace(params);
   }
 
   /**
-   * Retrieves a list of all existing space names.
-   *
-   * @returns Array of space names
-   *
-   * @example
-   * ```typescript
-   * const spaces = kasane.showSpaces();
-   * console.log("Available spaces:", spaces);
-   * // Output: ["sensor_data", "user_locations"]
-   * ```
+   * Returns all space names.
    */
   showSpaces(): string[] {
     return this.spaceCommands.showSpaces();
