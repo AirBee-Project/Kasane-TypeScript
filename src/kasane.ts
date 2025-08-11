@@ -71,6 +71,9 @@ import {
  * });
  * ```
  */
+/**
+ * Main Kasane class for 4D space-time database operations.
+ */
 export class Kasane {
   /**
    * Supported WASM version range for this npm package.
@@ -577,7 +580,10 @@ export class Kasane {
    */
   static options = StaticMethods.options;
 
-  ///編集中
+  /**
+   * Returns space operations object for chaining.
+   * @param name Name of the space
+   */
   space(name: string) {
     return this.spaceCommands.space(name);
   }

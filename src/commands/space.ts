@@ -16,27 +16,10 @@ export interface SpaceCommands {
    * Deletes a space and all its data.
    * @param params.space Name of the space
    */
-   * @param params Object containing space name
-   * @param params.space Name of the space to delete
-   *
-   * @example
-   * ```typescript
-   * kasane.deleteSpace({ space: "old_sensor_data" });
-   * ```
-   */
   deleteSpace(params: { space: string }): void;
 
   /**
-   * Retrieves a list of all existing space names.
-   *
-   * @returns Array of space names
-   *
-   * @example
-   * ```typescript
-   * const spaces = kasane.showSpaces();
-   * console.log("Available spaces:", spaces);
-   * // Output: ["sensor_data", "user_locations"]
-   * ```
+   * Returns all space names.
    */
   showSpaces(): string[];
 
