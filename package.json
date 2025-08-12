@@ -1,6 +1,6 @@
 {
   "name": "kasane-client",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "TypeScript wrapper for Kasane 4-dimensional space-time database engine",
   "type": "module",
   "main": "./dist/index.cjs",
