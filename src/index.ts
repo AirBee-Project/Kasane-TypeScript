@@ -23,4 +23,6 @@ export type {
   FilterBoolean,
   FilterInt,
   FilterText,
+  //Point
+  Point,
 } from "./types/index.js";

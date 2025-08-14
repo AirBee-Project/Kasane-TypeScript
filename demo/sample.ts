@@ -44,4 +44,4 @@ let value = kasane.getValue({
   options: { vertex: true, center: true, id_string: true },
 });
 
-console.log(JSON.stringify(value));
+console.log(value[0].center?.altitude);

@@ -10,7 +10,11 @@ import type { SpaceTimeId } from "./input.js";
 /**
  * Represents a point in 3-dimensional space as [x, y, z] coordinates.
  */
-export type Point = [number, number, number]; // [x, y, z]
+export type Point = {
+  latitude: number;
+  longitude: number;
+  altitude: number;
+}; // [x, y, z]
 
 /**
  * Output structure for getValue operations containing spatial-temporal data with value.

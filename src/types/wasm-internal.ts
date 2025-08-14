@@ -46,7 +46,7 @@ export interface WasmGetValueOutput {
   /** Optional eight vertices defining the 3D spatial region */
   vertex?: [Point, Point, Point, Point, Point, Point, Point, Point] | null;
   /** Optional center point of the region */
-  center?: [number, number, number] | null;
+  center?: Point | null;
   /** The stored value in WASM format */
   value: any; // Will be { INT: number } | { TEXT: string } | { BOOLEAN: boolean }
 }
